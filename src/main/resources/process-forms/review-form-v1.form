@@ -1,0 +1,153 @@
+{
+  "components": [
+    {
+      "label": "First Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0yqyfg1",
+        "columns": null
+      },
+      "id": "Field_1otjnng",
+      "key": "firstName",
+      "readonly": true
+    },
+    {
+      "label": "Last Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_108odm7",
+        "columns": null
+      },
+      "id": "Field_1rzwjqv",
+      "key": "lastName",
+      "readonly": true
+    },
+    {
+      "label": "Age",
+      "type": "number",
+      "layout": {
+        "row": "Row_1w9ztpj",
+        "columns": null
+      },
+      "id": "Field_0wvcl6o",
+      "key": "age",
+      "readonly": true
+    },
+    {
+      "label": "Income",
+      "type": "number",
+      "layout": {
+        "row": "Row_1yorp1w",
+        "columns": null
+      },
+      "id": "Field_0bi9vd2",
+      "key": "income",
+      "readonly": true
+    },
+    {
+      "label": "Loan Amount",
+      "type": "number",
+      "layout": {
+        "row": "Row_1e9h5wz",
+        "columns": null
+      },
+      "id": "Field_1w6vfm9",
+      "key": "loanAmount",
+      "readonly": true
+    },
+    {
+      "label": "Credit History",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0x6y9mj",
+        "columns": null
+      },
+      "id": "Field_0hkydgs",
+      "key": "creditHistory",
+      "readonly": true
+    },
+    {
+      "label": "Credit Score",
+      "type": "number",
+      "layout": {
+        "row": "Row_1pvu7kn",
+        "columns": null
+      },
+      "id": "Field_0s8i96l",
+      "key": "creditScore",
+      "readonly": true
+    },
+    {
+      "label": "Rule Decision",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1kx86s1",
+        "columns": null
+      },
+      "id": "Field_1y3v6dm",
+      "key": "ruleDecision",
+      "readonly": true
+    },
+    {
+      "label": "AI Recommendation",
+      "type": "textarea",
+      "layout": {
+        "row": "Row_0x00jwv",
+        "columns": 16
+      },
+      "id": "Field_1gpr1u0",
+      "key": "aiRecommendation",
+      "readonly": true
+    },
+    {
+      "label": "AI Risk Level",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0x00jwv",
+        "columns": 16
+      },
+      "id": "Field_0mw2pal",
+      "key": "aiRiskLevel",
+      "readonly": true
+    },
+    {
+      "label": "Decision",
+      "values": [
+        {
+          "label": "Approve",
+          "value": "Approve"
+        },
+        {
+          "label": "Reject",
+          "value": "Reject"
+        }
+      ],
+      "type": "radio",
+      "layout": {
+        "row": "Row_0x00jwv",
+        "columns": null
+      },
+      "id": "Field_060uodc",
+      "key": "decision",
+      "defaultValue": "Reject",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Submit",
+      "action": "submit",
+      "type": "button",
+      "layout": {
+        "row": "Row_07bvz4p",
+        "columns": null
+      },
+      "id": "Field_137i41j"
+    }
+  ],
+  "type": "default",
+  "id": "review-form-v1",
+  "executionPlatform": "Operaton Platform",
+  "executionPlatformVersion": "1.1.1",
+  "schemaVersion": 19
+}

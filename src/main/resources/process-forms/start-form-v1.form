@@ -1,0 +1,58 @@
+{
+  "components": [
+    {
+      "label": "Applicant ID",
+      "type": "select",
+      "layout": {
+        "row": "Row_0j4t6aa",
+        "columns": null
+      },
+      "id": "Field_0l0o6qd",
+      "key": "applicantId",
+      "values": [
+        {
+          "label": "Emma Thompson (Low Risk)",
+          "value": "app_low_risk_01"
+        },
+        {
+          "label": "Carlos Vega (High Risk)",
+          "value": "app_high_risk_01"
+        },
+        {
+          "label": "Olivia Chen (Premium)",
+          "value": "app_premium_01"
+        },
+        {
+          "label": "Liam Johnson (No History)",
+          "value": "app_no_history_01"
+        },
+        {
+          "label": "Sofia Martinez (Borderline)",
+          "value": "app_borderline_01"
+        },
+        {
+          "label": "Michael Brown (Senior, Large Loan)",
+          "value": "app_senior_large_loan_01"
+        }
+      ],
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Submit",
+      "action": "submit",
+      "type": "button",
+      "layout": {
+        "row": "Row_07bvz4p",
+        "columns": null
+      },
+      "id": "Field_137i41j"
+    }
+  ],
+  "type": "default",
+  "id": "start-form-v1",
+  "executionPlatform": "Operaton Platform",
+  "executionPlatformVersion": "1.1.1",
+  "schemaVersion": 17
+}

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+  <process id="loan-scoring-v1" name="loan-scoring-v1" isExecutable="true" camunda:versionTag="1.0.0" camunda:historyTimeToLive="P180D">
+    <startEvent id="startEvent1" camunda:formRef="start-form-v1" camunda:formRefBinding="latest">
+      <extensionElements>
+        <camunda:formData type="camunda-form" />
+      </extensionElements>
+      <outgoing>Flow_0fwcp91</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_0fwcp91" sourceRef="startEvent1" targetRef="loan_applicant_data" />
+    <serviceTask id="loan_applicant_data" name="Load Applicant Data" camunda:asyncBefore="true" camunda:class="io.flowset.demo.delegate.LoadApplicantDataDelegate">
+      <incoming>Flow_0fwcp91</incoming>
+      <outgoing>Flow_0wn8bep</outgoing>
+    </serviceTask>
+    <sequenceFlow id="Flow_0wn8bep" sourceRef="loan_applicant_data" targetRef="calculate_score" />
+    <serviceTask id="calculate_score" name="Calculate Score" camunda:asyncBefore="true" camunda:class="io.flowset.demo.delegate.ScoringDelegate">
+      <incoming>Flow_0wn8bep</incoming>
+      <outgoing>Flow_0ho1an5</outgoing>
+    </serviceTask>
+    <sequenceFlow id="Flow_0ho1an5" sourceRef="calculate_score" targetRef="parallel_split" />
+    <businessRuleTask id="evaluate_rule_decision" name="Evaluate Rule Decision" camunda:resultVariable="ruleDecision" camunda:decisionRef="decisionByScore" camunda:mapDecisionResult="singleEntry">
+      <incoming>Flow_142mho5</incoming>
+      <outgoing>Flow_1qdmn01</outgoing>
+    </businessRuleTask>
+    <sequenceFlow id="Flow_1qdmn01" sourceRef="evaluate_rule_decision" targetRef="check_join" />
+    <userTask id="review_application" name="Review Application" camunda:formRef="review-form-v1" camunda:formRefBinding="latest" camunda:assignee="admin">
+      <extensionElements>
+        <camunda:formData type="camunda-form" />
+      </extensionElements>
+      <incoming>Flow_1azxeun</incoming>
+      <outgoing>Flow_055xut3</outgoing>
+    </userTask>
+    <exclusiveGateway id="decision">
+      <incoming>Flow_055xut3</incoming>
+      <outgoing>approved_flow</outgoing>
+      <outgoing>rejected_flow</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_055xut3" sourceRef="review_application" targetRef="decision" />
+    <sequenceFlow id="approved_flow" sourceRef="decision" targetRef="notify_approval">
+      <conditionExpression xsi:type="tFormalExpression">${decision == 'Approve'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="rejected_flow" sourceRef="decision" targetRef="notify_rejection">
+      <conditionExpression xsi:type="tFormalExpression">${decision == 'Reject'}</conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="notify_approval" name="Notify Approval" camunda:class="io.flowset.demo.delegate.ApprovalNotifyDelegate">
+      <incoming>approved_flow</incoming>
+      <outgoing>Flow_1ifcvnr</outgoing>
+    </serviceTask>
+    <serviceTask id="notify_rejection" name="Notify Rejection" camunda:class="io.flowset.demo.delegate.RefusalNotifyDelegate">
+      <incoming>rejected_flow</incoming>
+      <outgoing>Flow_1wanz0q</outgoing>
+    </serviceTask>
+    <endEvent id="Event_070ketz">
+      <incoming>Flow_1ifcvnr</incoming>
+    </endEvent>
+    <sequenceFlow id="Flow_1ifcvnr" sourceRef="notify_approval" targetRef="Event_070ketz" />
+    <endEvent id="Event_0u8yqpb">
+      <incoming>Flow_1wanz0q</incoming>
+    </endEvent>
+    <sequenceFlow id="Flow_1wanz0q" sourceRef="notify_rejection" targetRef="Event_0u8yqpb" />
+    <sequenceFlow id="Flow_142mho5" sourceRef="parallel_split" targetRef="evaluate_rule_decision" />
+    <sequenceFlow id="Flow_1azxeun" sourceRef="check_join" targetRef="review_application" />
+    <parallelGateway id="parallel_split">
+      <incoming>Flow_0ho1an5</incoming>
+      <outgoing>Flow_142mho5</outgoing>
+      <outgoing>Flow_0e4w2et</outgoing>
+    </parallelGateway>
+    <parallelGateway id="check_join">
+      <incoming>Flow_1qdmn01</incoming>
+      <incoming>Flow_0v8bigm</incoming>
+      <outgoing>Flow_1azxeun</outgoing>
+    </parallelGateway>
+    <sequenceFlow id="Flow_0e4w2et" sourceRef="parallel_split" targetRef="ai_fraud_check" />
+    <sequenceFlow id="Flow_0v8bigm" sourceRef="ai_fraud_check" targetRef="check_join" />
+    <serviceTask id="ai_fraud_check" name="AI Fraud Check" camunda:class="io.flowset.demo.delegate.AIFraudCheckDelegate">
+      <incoming>Flow_0e4w2et</incoming>
+      <outgoing>Flow_0v8bigm</outgoing>
+    </serviceTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+    <bpmndi:BPMNPlane id="BPMNPlane_process" bpmnElement="loan-scoring-v1">
+      <bpmndi:BPMNShape id="BPMNShape_startEvent1" bpmnElement="startEvent1" bioc:stroke="#205022" bioc:fill="#c8e6c9" color:background-color="#c8e6c9" color:border-color="#205022">
+        <omgdc:Bounds x="150" y="150" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vgjl69_di" bpmnElement="loan_applicant_data" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <omgdc:Bounds x="240" y="128" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z0j655_di" bpmnElement="calculate_score" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <omgdc:Bounds x="400" y="128" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fx4b3k_di" bpmnElement="review_application" bioc:stroke="#6b3c00" bioc:fill="#ffe0b2" color:background-color="#ffe0b2" color:border-color="#6b3c00">
+        <omgdc:Bounds x="930" y="128" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0yieljv_di" bpmnElement="decision" isMarkerVisible="true" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
+        <omgdc:Bounds x="1095" y="143" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="945" y="161" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oa129o_di" bpmnElement="notify_approval" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <omgdc:Bounds x="1210" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qwjnf4_di" bpmnElement="notify_rejection" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <omgdc:Bounds x="1210" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_070ketz_di" bpmnElement="Event_070ketz" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <omgdc:Bounds x="1382" y="72" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0u8yqpb_di" bpmnElement="Event_0u8yqpb" bioc:stroke="#831311" bioc:fill="#ffcdd2" color:background-color="#ffcdd2" color:border-color="#831311">
+        <omgdc:Bounds x="1382" y="222" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1gewj5i_di" bpmnElement="parallel_split" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
+        <omgdc:Bounds x="555" y="143" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1opgu0n_di" bpmnElement="check_join" bioc:stroke="#5b176d" bioc:fill="#e1bee7" color:background-color="#e1bee7" color:border-color="#5b176d">
+        <omgdc:Bounds x="815" y="143" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ph8w4a_di" bpmnElement="evaluate_rule_decision" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <omgdc:Bounds x="650" y="30" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01adryo_di" bpmnElement="ai_fraud_check" bioc:stroke="#0d4372" bioc:fill="#bbdefb" color:background-color="#bbdefb" color:border-color="#0d4372">
+        <omgdc:Bounds x="650" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0fwcp91_di" bpmnElement="Flow_0fwcp91">
+        <omgdi:waypoint x="186" y="168" />
+        <omgdi:waypoint x="240" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wn8bep_di" bpmnElement="Flow_0wn8bep">
+        <omgdi:waypoint x="340" y="168" />
+        <omgdi:waypoint x="400" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ho1an5_di" bpmnElement="Flow_0ho1an5">
+        <omgdi:waypoint x="500" y="168" />
+        <omgdi:waypoint x="555" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dgwn8y_di" bpmnElement="Flow_1qdmn01">
+        <omgdi:waypoint x="750" y="70" />
+        <omgdi:waypoint x="840" y="70" />
+        <omgdi:waypoint x="840" y="143" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_055xut3_di" bpmnElement="Flow_055xut3">
+        <omgdi:waypoint x="1030" y="168" />
+        <omgdi:waypoint x="1095" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mo3033_di" bpmnElement="approved_flow">
+        <omgdi:waypoint x="1120" y="143" />
+        <omgdi:waypoint x="1120" y="90" />
+        <omgdi:waypoint x="1210" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n12egt_di" bpmnElement="rejected_flow">
+        <omgdi:waypoint x="1120" y="193" />
+        <omgdi:waypoint x="1120" y="240" />
+        <omgdi:waypoint x="1210" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ifcvnr_di" bpmnElement="Flow_1ifcvnr">
+        <omgdi:waypoint x="1310" y="90" />
+        <omgdi:waypoint x="1382" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wanz0q_di" bpmnElement="Flow_1wanz0q">
+        <omgdi:waypoint x="1310" y="240" />
+        <omgdi:waypoint x="1382" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_142mho5_di" bpmnElement="Flow_142mho5">
+        <omgdi:waypoint x="580" y="143" />
+        <omgdi:waypoint x="580" y="70" />
+        <omgdi:waypoint x="650" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1azxeun_di" bpmnElement="Flow_1azxeun">
+        <omgdi:waypoint x="865" y="168" />
+        <omgdi:waypoint x="930" y="168" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e4w2et_di" bpmnElement="Flow_0e4w2et">
+        <omgdi:waypoint x="580" y="193" />
+        <omgdi:waypoint x="580" y="250" />
+        <omgdi:waypoint x="650" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v8bigm_di" bpmnElement="Flow_0v8bigm">
+        <omgdi:waypoint x="750" y="250" />
+        <omgdi:waypoint x="840" y="250" />
+        <omgdi:waypoint x="840" y="193" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+    <process id="simple-process" name="Simple process" isExecutable="true" camunda:historyTimeToLive="P30D">
+        <startEvent id="startEvent1">
+            <outgoing>Flow_0sayidq</outgoing>
+        </startEvent>
+        <sequenceFlow id="Flow_0sayidq" sourceRef="startEvent1" targetRef="Activity_16ohsxx"/>
+        <endEvent id="Event_084x5ej">
+            <incoming>Flow_1irf8s2</incoming>
+        </endEvent>
+        <sequenceFlow id="Flow_1irf8s2" sourceRef="Activity_16ohsxx" targetRef="Event_084x5ej"/>
+        <serviceTask id="Activity_16ohsxx" name="Say Hello" camunda:class="io.flowset.demo.delegate.SayHelloDelegate">
+            <incoming>Flow_0sayidq</incoming>
+            <outgoing>Flow_1irf8s2</outgoing>
+        </serviceTask>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+        <bpmndi:BPMNPlane id="BPMNPlane_process" bpmnElement="simple-process">
+            <bpmndi:BPMNShape id="BPMNShape_startEvent1" bpmnElement="startEvent1">
+                <omgdc:Bounds x="150" y="150" width="36" height="36"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Event_084x5ej_di" bpmnElement="Event_084x5ej">
+                <omgdc:Bounds x="402" y="150" width="36" height="36"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Activity_12fw1ig_di" bpmnElement="Activity_16ohsxx">
+                <omgdc:Bounds x="240" y="128" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="Flow_0sayidq_di" bpmnElement="Flow_0sayidq">
+                <omgdi:waypoint x="186" y="168"/>
+                <omgdi:waypoint x="240" y="168"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="Flow_1irf8s2_di" bpmnElement="Flow_1irf8s2">
+                <omgdi:waypoint x="340" y="168"/>
+                <omgdi:waypoint x="402" y="168"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

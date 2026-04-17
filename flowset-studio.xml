@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FlowsetPluginProjectSettings">
+    <option name="welcomeScreenIsShownOnImport" value="true" />
+    <option name="dmnRoots" value="classpath*:/" />
+    <option name="formsRoots" value="classpath*:/process-forms" />
+    <option name="processesRoots" value="classpath*:/processes" />
+  </component>
+</project>

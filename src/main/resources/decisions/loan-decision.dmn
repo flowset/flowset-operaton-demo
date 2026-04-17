@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:camunda="http://camunda.org/schema/1.0/dmn"
+             id="Definitions_loan_decision" name="loan-decision" namespace="http://camunda.org/schema/1.0/dmn">
+    <decision id="decisionByScore" name="Decision by Score">
+        <decisionTable id="DecisionTable_1">
+            <input id="Input_1" label="Credit Score">
+                <inputExpression id="InputExpression_1" typeRef="integer">
+                    <text>creditScore</text>
+                </inputExpression>
+            </input>
+            <output id="Output_1" label="Rule Decision" name="ruleDecision" typeRef="string"/>
+            <rule id="Rule_1">
+                <inputEntry id="InputEntry_1">
+                    <text>&gt;= 70</text>
+                </inputEntry>
+                <outputEntry id="OutputEntry_1">
+                    <text>"Approve"</text>
+                </outputEntry>
+            </rule>
+            <rule id="Rule_2">
+                <inputEntry id="InputEntry_2">
+                    <text>&lt; 70</text>
+                </inputEntry>
+                <outputEntry id="OutputEntry_2">
+                    <text>"Reject"</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="DMNDiagram_loan_decision">
+            <dmndi:DMNShape id="DMNShape_decisionByScore" dmnElementRef="decisionByScore">
+                <dc:Bounds height="80" width="180" x="150" y="80"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape id="DMNShape_DecisionTable_1" dmnElementRef="DecisionTable_1">
+                <dc:Bounds height="180" width="360" x="150" y="200"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
